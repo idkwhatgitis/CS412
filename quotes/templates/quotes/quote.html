@@ -1,0 +1,12 @@
+
+
+<!-- same file name as the views name -->
+{% extends 'quotes/base.html' %}
+
+  {% block content %}
+        <p style="font-size:40px" >Quote of the day</p><br>
+        <p>{{letter1}}</p>
+        <img src = {{image}} alt = "an image" width="300" height="300" >
+        <hr>
+        this page was generated at {{current_time}}.
+    {% endblock %}

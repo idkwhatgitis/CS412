@@ -1,0 +1,24 @@
+<!-- same file name as the views name -->
+
+
+{% extends 'quotes/base.html' %}
+{% load static %}
+<html>
+    <head>
+        <link rel = "stylesheet" href = "{% static 'styles_quotes.css' %}"> 
+        <title>
+            About
+        </title>
+    </head>
+{% block content %}
+    <body>
+        <table>
+            <tr>
+                <td><img src = {{image1}} alt = "an image" width="200" height="200"></td>
+                <td>{{info1}}</td>
+            </tr>
+        </table>
+    </body>
+{% endblock %}
+
+</html>

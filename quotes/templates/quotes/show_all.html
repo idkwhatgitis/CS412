@@ -1,0 +1,23 @@
+
+{% extends 'quotes/base.html' %}
+{% load static %}
+<html>
+    <head>
+        <link rel = "stylesheet" href = "{% static 'styles_quotes.css' %}"> 
+        <title>
+            Showing all
+        </title>
+    </head>
+{%block content%}
+
+<div>
+    {% for x,y in all %}
+        <p>{{x}}</p>
+        <img src="{{y}}">
+      
+    {% endfor %}
+</div>
+
+
+{% endblock %}
+</html>
