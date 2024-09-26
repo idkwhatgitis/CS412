@@ -1,0 +1,19 @@
+{% extends 'formdata/base.html' %}
+
+{% block content %}
+
+    <div>
+        <form action="/formdata/submit" method="POST">
+            <!-- it will be used to verify the authenticity of this form -->
+            {% csrf_token %} 
+            Name: <input type="text" name="name"><br>
+            Fav color: <input type="text" name="favorite_color"><br>
+            <input type="submit">
+
+
+
+        </form>
+
+    </div>
+
+{% endblock %}

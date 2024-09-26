@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "hw",
     "quotes",
+    "formdata",
+    "restaurant",
 ]
 
 MIDDLEWARE = [

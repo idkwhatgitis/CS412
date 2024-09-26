@@ -1,0 +1,58 @@
+{% extends 'restaurant/base.html' %}
+
+
+{% block content %}
+
+    <div>
+        <form action="/restaurant/submit" method="POST">
+            <!-- it will be used to verify the authenticity of this form -->
+            {% csrf_token %} 
+            <h1>Order below!</h1>
+            <table>
+                <tr>
+            <td><h3>Choose entree from below:</h3></td>
+            <td>
+            <input type="checkbox" name="entree" id="Avocado" value="Avocado">Avocado toast $10<br>
+            <input type="checkbox" name="entree" id="Eggs" value="Eggs">Poached eggs $4<br>
+            <input type="checkbox" name="entree" id="Cheese" value="Cheese">Grilled cheese $6<br>
+            <input type="checkbox" name="entree" id="Ham" value="Ham">Ham sandwich $12<br><br>
+            </td>
+                </tr>
+                <tr>
+                    <td>
+            <h3>Daily special(always $10 everyday!):</h3></td>
+            <td>
+            <input type="checkbox" name="special" id="daily_special" value="special">{{special}}<br>
+                    </td>
+                </tr>
+                <tr>
+                <td><h3>Our daily special have 2 sizes(large or regular), large size for $5 extra!<br> Would you like a large size daily special?</h3></td>
+                <td> <input type = "radio" name = "large" id = "Yes" value="Yes" style="display: block; margin: 0 auto;">Yes<br>
+            <input type = "radio" name = "large" id = "No" value="No" style="display: block; margin: 0 auto;">No</td>
+                </tr>
+            </table>
+            
+
+
+
+
+            <h3>Special instructions:</h3>
+            <input type="text" name="instruction" id="special_instruction" placeholder="Enter any special instruction" style="display: block; margin: 0 auto;"
+                rows="15" columns="30"><br>
+               
+            <h3>Customer name(First and last):</h3>
+            <input type="text" name="name" id="name" placeholder="Your name(First and Last)" style="display: block; margin: 0 auto;"><br>
+               
+            <h3>Phone number:</h3>
+            <input type="text" name="num" id="number" placeholder="Your phone number" style="display: block; margin: 0 auto;"><br>
+               
+            <h3>Email:</h3>
+            <input type="text" name="email" id="email" placeholder="Your email" style="display: block; margin: 0 auto;"><br>
+            <input type="submit" value="Place Order!" style="display: block; margin: 0 auto; width: 100px; height: 50px; font-size: 18px;">
+    
+
+        </form>
+
+    </div>
+
+{% endblock %}
