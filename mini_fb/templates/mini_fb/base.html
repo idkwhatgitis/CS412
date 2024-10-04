@@ -1,0 +1,27 @@
+
+<!-- same file name as the views name 
+ base page from which all other pages will inherit-->
+
+
+ {% load static %}
+
+ <html>
+     <head>
+         <link rel = "stylesheet" href = "{% static 'styles_quotes.css' %}"> 
+         <title>
+            mini facebook
+         </title>
+     </head>
+ 
+ 
+     <body>
+         <nav>
+          <!-- <a href="{% url 'quote' %}">Quote</a> <br> -->  <!-- we can do href="/hw/", but this is more generic -->
+
+         </nav>
+ 
+        {% block content %}
+        <!-- put stuff/content here-->
+        {% endblock %}
+     </body>
+ </html>
