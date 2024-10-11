@@ -1,0 +1,50 @@
+
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+<h2 style="text-align: center;">Showing detail of {{profile.first_name}} {{profile.last_name}}</h2>
+
+<table style="margin: 0 auto;">
+    <tr>
+        <td colspan="2"><img src="{{profile.image_url}}"></td>
+    </tr>
+
+    <tr>
+        <th>Name:</th>
+        <td>{{profile.first_name}} {{profile.last_name}}</td>
+    </tr>
+    <tr>
+        <th>City:</th>
+        <td>{{profile.city}}</td>
+    </tr>
+    <tr>
+        <th>Email:</th>
+        <td>{{profile.email_address}}</td>
+    </tr>
+    
+</table>
+
+
+<div>
+    <h2>Status Message</h2>
+    <h3><a href="{% url 'mini_fb:URL_create_status' profile.pk %}">Create a message</a></h3>
+    
+    {% if profile.get_status_messages %}
+        {% for c in profile.get_status_messages %}
+    
+           
+        <p>
+              Message at {{c.timestamp}}: {{c.message}}
+         </p>
+         
+         {% endfor %}
+      
+     {% else %}
+        <p>No status message</p>    
+    
+    {% endif %}
+
+</div>
+
+{% endblock %}
+

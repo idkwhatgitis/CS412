@@ -7,11 +7,14 @@
 
 <main class="grid-container">
     {% for a in articles %}
-
-        <article> <!-- was div before -->
-            <h2>{{a.title}}</h2>
-            <h3>{{a.author}} at {{a.published}}</h3>
+        <a href="{% url 'blog:article' a.pk %}">
             <img src="{{a.image_url}}">
+        </a>
+        <article> <!-- was div before -->
+            <h2> <a href="{% url 'blog:article' a.pk %}">{{a.title}}</a></h2>
+
+            <h3>{{a.author}} at {{a.published}}</h3>
+           
             <p>
                 {{a.text}}
             </p>

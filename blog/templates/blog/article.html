@@ -1,0 +1,42 @@
+
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+<h1>{{article.title}}</h1>
+
+<main class="grid-container">
+
+        <article> <!-- was div before -->
+            <h2>{{article.title}}</h2>
+            <h3>{{article.author}} at {{article.published}}</h3>
+            <img src="{{article.image_url}}">
+            <p>
+                {{article.text}}
+            </p>
+        </article>
+
+        <div>
+            <h2>Comments</h2>
+            <h3><a href="{% url 'blog:create_comment' article.pk %}">Create a comment</a></h3>
+            {% if article.get_comments %}
+                {% for c in article.get_comments %}
+            
+                    <strong>by {{c.author}} and {{c.published}} </strong>
+                    <p>
+                      {{c.text}}
+                 </p>
+                 {% endfor %}
+              
+             {% else %}
+                <p>No comments</p>    
+            
+            {% endif %}
+
+        </div>
+
+
+</main>
+
+{% endblock %}
+

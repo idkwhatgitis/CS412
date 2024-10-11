@@ -7,7 +7,7 @@
 
  <html>
      <head>
-         <link rel = "stylesheet" href = "{% static 'styles_quotes.css' %}"> 
+         <link rel = "stylesheet" href = "{% static 'styles_mini_fb.css' %}"> 
          <title>
             mini facebook
          </title>
@@ -17,7 +17,10 @@
      <body>
          <nav>
           <!-- <a href="{% url 'quote' %}">Quote</a> <br> -->  <!-- we can do href="/hw/", but this is more generic -->
+         
+          <a href="{% url 'mini_fb:show_all' %}">All Profiles</a><br>
 
+          <a href="{% url 'mini_fb:create_profile' %}">Create Profile</a>  
          </nav>
  
         {% block content %}

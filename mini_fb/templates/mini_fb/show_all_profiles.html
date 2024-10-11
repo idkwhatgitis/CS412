@@ -9,17 +9,34 @@
     {% for a in profiles %}
 
         <profile> <!-- was div before -->
-            <h2>Name: {{a.first_name}} {{a.last_name}}</h2>
+            <h2><a href="{% url 'mini_fb:show_profile' a.pk %}">Name: {{a.first_name}} {{a.last_name}}</a></h2>
             <h4>Email: {{a.email_address}}</h4>
             <h4>City: {{a.city}}</h4>
             
+            <a href="{% url 'mini_fb:show_profile' a.pk %}">
             <img src="{{a.image_url}}">
+            </a>
             <p>
                 
             </p>
         </profile>
     {% endfor %}
 
+
+    {% for a in articles %}
+    <a href="{% url 'blog:article' a.pk %}">
+        <img src="{{a.image_url}}">
+    </a>
+    <article> <!-- was div before -->
+        <h2> <a href="{% url 'blog:article' a.pk %}">{{a.title}}</a></h2>
+
+        <h3>{{a.author}} at {{a.published}}</h3>
+       
+        <p>
+            {{a.text}}
+        </p>
+    </article>
+{% endfor %}
 
 </main>
 
