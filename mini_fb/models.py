@@ -1,3 +1,7 @@
+# File: models.py
+# Author: Shuaiqi Huang (shuang20@bu.edu) 10/11/2024
+# Description: models used for mini_fb: profile and status message
+
 from django.db import models
 from django.urls import reverse
 

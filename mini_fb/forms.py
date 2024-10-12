@@ -1,3 +1,7 @@
+# File: forms.py
+# Author: Shuaiqi Huang (shuang20@bu.edu) 10/11/2024
+# Description: forms to process a new profile and adding status message
+
 from django import forms
 from .models import Profile, StatusMessage
 

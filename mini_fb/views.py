@@ -1,3 +1,8 @@
+# File: views.py
+# Author: Shuaiqi Huang (shuang20@bu.edu) 10/11/2024
+# Description: presentation to the user: showall profiles and detail profiles
+#creating profile and status message, and redirecting/rendering
+
 from django.shortcuts import render
 from .models import Profile
 from django.views.generic import ListView, DetailView, CreateView
@@ -60,7 +65,7 @@ class CreateStatusMessageView(CreateView):
 
     def form_valid(self, form):
         ###self.kwargs shows the pk, form.cleane_data shows the fields with its argument
-        
+
         profile = Profile.objects.get(pk=self.kwargs['pk'])
 
         #attach the article to the instance of cmoment

@@ -1,3 +1,7 @@
+# File: urls.py
+# Author: Shuaiqi Huang (shuang20@bu.edu) 10/11/2024
+# Description: url patterns for different pages
+
 from django.urls import path
 from django.conf import settings
 from . import views
