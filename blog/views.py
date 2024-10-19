@@ -66,3 +66,11 @@ class CreateCommentView(CreateView):
 
         return super().form_valid(form)
         
+
+class CreateArticleView(CreateView):
+    form_class = CreateArticleForm
+    template_name = "blog/create_article_form.html"
+
+    def form_valid(self, form):
+        #print(f'CreateArticleView.form_valid: form.cleaned_data = {form.cleaned_data}')
+        return super().form_valid(form)

@@ -2,6 +2,8 @@
 {% extends 'mini_fb/base.html' %}
 
 {% block content %}
+
+<h3><a href="{% url 'mini_fb:update_profile' profile.pk %}">Update Profile</a></h3>
 <h2 style="text-align: center;">Showing detail of {{profile.first_name}} {{profile.last_name}}</h2>
 
 <table style="margin: 0 auto;">
@@ -31,11 +33,20 @@
     
     {% if profile.get_status_messages %}
         {% for c in profile.get_status_messages %}
-    
-           
         <p>
               Message at {{c.timestamp}}: {{c.message}}
          </p>
+         <a href="{% url 'mini_fb:delete_message' c.pk %}">Delete message</a>
+         <a href="{% url 'mini_fb:update_message' c.pk %}">Update message</a>
+            {% if c.get_images %}
+                    <h4>Image(s) along with the message:</h4>
+                        {% for img in c.get_images %}
+                                <img src="{{ img.image_url.url }}" alt="Image for {{ c.message }}"><br>
+                        {% endfor %}
+                   
+            {% endif %}
+            <hr>
+            
          
          {% endfor %}
       

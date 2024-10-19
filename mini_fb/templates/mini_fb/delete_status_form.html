@@ -1,0 +1,26 @@
+
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+
+
+<h3>Deleting message</h3>
+{{status_message}}
+
+    <form method="POST">
+        {% csrf_token %}
+
+    <input type="submit" name="yes" value="yes">
+
+    
+    </form>
+
+    <form method="GET" action="{% url 'mini_fb:show_profile' status_message.profile.pk %}">
+        {% csrf_token %}
+        <input type="submit" name="no" value="no">
+    </form>
+
+        
+
+{% endblock %}
+

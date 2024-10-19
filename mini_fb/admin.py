@@ -1,5 +1,5 @@
 # File: admin.py
-# Author: Shuaiqi Huang (shuang20@bu.edu) 10/11/2024
+# Author: Shuaiqi Huang (shuang20@bu.edu) 10/19/2024
 # Description: admin file for models
 
 
@@ -9,3 +9,4 @@ from django.contrib import admin
 from .models import *
 admin.site.register(Profile) #register for profile 
 admin.site.register(StatusMessage) #register for status message
+admin.site.register(Image) #register for image, newly add @ oct.19

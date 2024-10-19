@@ -1,0 +1,28 @@
+
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+
+
+<h3>Update message</h3>
+
+    <form method="POST">
+        {% csrf_token %}
+       
+    <table>
+        {{form.as_table}}
+    </table>
+
+   
+    <input type="submit" name="update message" value="Update message">
+
+    </form>
+
+    <form action="{% url 'mini_fb:show_profile' status_message.profile.pk %}">
+        <input type="submit" name="Cancel" value="Cancel">
+    </form>
+
+        
+
+{% endblock %}
+

@@ -3,20 +3,19 @@
 
 {% block content %}
 
+
+<h3>Update {{profile.first_name}} {{profile.last_name}}'s profile</h3>
+
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <!-- {{form}} very generic -->
-         <!-- {{form.as_p}} as paragaphs -->
-
+       
     <table>
         {{form.as_table}}
     </table>
 
-    <h6>Choose some image to upload:</h6>
-    <input type="file" name = "files" multiple /><br>
+   
 
-
-    <input type="submit" name="submit" value="Create Message">
+    <input type="submit" name="update profile" value="Update profile">
 
     
     </form>
@@ -24,8 +23,6 @@
     <form action="{% url 'mini_fb:show_profile' profile.pk %}">
         <input type="submit" name="Cancel" value="Cancel">
     </form>
-
-  
 
         
 

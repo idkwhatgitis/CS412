@@ -8,7 +8,7 @@
 <main class="grid-container">
     {% for a in articles %}
         <a href="{% url 'blog:article' a.pk %}">
-            <img src="{{a.image_url}}">
+            <img src="{{a.image_fil.url}}">
         </a>
         <article> <!-- was div before -->
             <h2> <a href="{% url 'blog:article' a.pk %}">{{a.title}}</a></h2>

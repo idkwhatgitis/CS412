@@ -1,5 +1,5 @@
 # File: forms.py
-# Author: Shuaiqi Huang (shuang20@bu.edu) 10/11/2024
+# Author: Shuaiqi Huang (shuang20@bu.edu) 10/19/2024
 # Description: forms to process a new profile and adding status message
 
 from django import forms
@@ -18,3 +18,15 @@ class CreateStatusMessageForm(forms.ModelForm):
     class Meta:
         model = StatusMessage
         fields = ['message'] #fields to include in the form
+
+class UpdateProfileForm(forms.ModelForm):
+    '''forms to update an existing profile'''
+    class Meta:
+        model = Profile
+        fields = ['city', 'email_address', 'image_url'] #fields to include in the form
+
+class UpdateStatusMessageForm(forms.ModelForm):
+    '''form to update an existing status message'''
+    class Meta:
+        model = StatusMessage
+        fields = ['message'] #fields to include in the form, timestamp not needed as automatically filled

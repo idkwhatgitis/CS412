@@ -1,5 +1,5 @@
 # File: models.py
-# Author: Shuaiqi Huang (shuang20@bu.edu) 10/11/2024
+# Author: Shuaiqi Huang (shuang20@bu.edu) 10/19/2024
 # Description: models used for mini_fb: profile and status message
 
 from django.db import models
@@ -41,4 +41,19 @@ class StatusMessage(models.Model):
     def __str__(self):
         '''string representation of this object'''
         return f'{self.message}'
+    
+    def get_images(self):
+        '''Returns a QuerySet of all Images related to this StatusMessage'''
+        return Image.objects.filter(statusMessage=self)
 
+class Image(models.Model):
+    '''class for message, which connects to another statue message'''
+    '''status message can have 0 or more images'''
+    '''an image can only link to 1 status message'''
+    statusMessage = models.ForeignKey("StatusMessage", on_delete=models.CASCADE)
+    image_url = models.ImageField(blank=True)
+    timestamp = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        '''string representation of this object'''
+        return f'image of {self.statusMessage}'

@@ -1,5 +1,5 @@
 # File: urls.py
-# Author: Shuaiqi Huang (shuang20@bu.edu) 10/11/2024
+# Author: Shuaiqi Huang (shuang20@bu.edu) 10/19/2024
 # Description: url patterns for different pages
 
 from django.urls import path
@@ -13,7 +13,9 @@ urlpatterns = [
     path(r'profiles/<int:pk>', views.ShowProfilePageView.as_view(), name='show_profile'), #profile detail view
     path(r'create_profile', views.CreateProfileView.as_view(), name='create_profile'), #forms to create a profile
     path(r'profiles/<int:pk>/create_status', views.CreateStatusMessageView.as_view(), name='URL_create_status'), #creating a message
-
+    path(r'profiles/<int:pk>/update', views.UpdateProfileView.as_view(), name='update_profile'), #updating profile
+    path(r'profiles/<int:pk>/delete', views.DeleteStatusMessageView.as_view(), name='delete_message'), #deleting statue message
+    path(r'profiles/<int:pk>/update_message', views.UpdateStatusMessageView.as_view(), name='update_message'), #updating status message
 ]
 
 
