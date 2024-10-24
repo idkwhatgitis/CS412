@@ -129,8 +129,8 @@ class CreateFriendView(View):
         # Get the profile pk and other_pk from the URL
         pk = self.kwargs.get('pk')
         other_pk = self.kwargs.get('other_pk')
+        profile = Profile.objects.get(pk=pk)
         if (pk!=other_pk):
-            profile = Profile.objects.get(pk=pk)
             other_profile = Profile.objects.get(pk=other_pk)
             profile.add_friend(other_profile)
         # Add the other profile as a friend
