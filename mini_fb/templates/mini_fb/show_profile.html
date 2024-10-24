@@ -4,6 +4,7 @@
 {% block content %}
 
 <h3><a href="{% url 'mini_fb:update_profile' profile.pk %}">Update Profile</a></h3>
+<a href="{% url 'mini_fb:news_feed' profile.pk %}">View News Feed</a>
 <h2 style="text-align: center;">Showing detail of {{profile.first_name}} {{profile.last_name}}</h2>
 
 <table style="margin: 0 auto;">
@@ -56,6 +57,27 @@
     {% endif %}
 
 </div>
+
+    <h2>Friends</h2>
+    <a href="{% url 'mini_fb:friend_suggestions' profile.pk %}">Friend Suggestions</a>
+        {% if profile.get_friends %}
+        {% for f in profile.get_friends %}
+            {% if f.profile2 == profile %}
+            
+            <img src="{{ f.profile1.image_url }}" alt="{{ f.profile1.first_name }}">
+            <p> <a href="{% url 'mini_fb:show_profile' f.profile1.pk %}">{{ f.profile1.first_name }} {{ f.profile1.last_name }}</a></p>
+            {% else %}
+            <a href="{% url 'mini_fb:show_profile' f.profile2.pk %}">
+                <!-- Friend's profile picture and name -->
+            </a>
+            <img src="{{ f.profile2.image_url }}" alt="{{ f.profile2.first_name }}">
+            <p><a href="{% url 'mini_fb:show_profile' f.profile2.pk %}">{{ f.profile2.first_name }} {{ f.profile2.last_name }}</a></p>
+            
+            {% endif %}
+         {% endfor %}
+        
+        {% endif %}
+
 
 {% endblock %}
 

@@ -16,6 +16,9 @@ urlpatterns = [
     path(r'profiles/<int:pk>/update', views.UpdateProfileView.as_view(), name='update_profile'), #updating profile
     path(r'profiles/<int:pk>/delete', views.DeleteStatusMessageView.as_view(), name='delete_message'), #deleting statue message
     path(r'profiles/<int:pk>/update_message', views.UpdateStatusMessageView.as_view(), name='update_message'), #updating status message
+    path(r'profiles/<int:pk>/add_friend/<int:other_pk>', views.CreateFriendView.as_view(), name='add_friend'), #creating friend view
+    path(r'profiles/<int:pk>/friend_suggestions', views.ShowFriendSuggestionsView.as_view(), name='friend_suggestions'), #view friend suggestions
+    path(r'profiles/<int:pk>/news_feed', views.ShowNewsFeedView.as_view(), name='news_feed'), #view news feed related to that person
 ]
 
 

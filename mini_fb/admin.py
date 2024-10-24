@@ -10,3 +10,4 @@ from .models import *
 admin.site.register(Profile) #register for profile 
 admin.site.register(StatusMessage) #register for status message
 admin.site.register(Image) #register for image, newly add @ oct.19
+admin.site.register(Friend) #register for friend relationship added at oct24
