@@ -44,7 +44,8 @@ class Profile(models.Model):
         # Check if the friend relationship already exists
         existing_friend = Friend.objects.filter(
             (Q(profile1=self) & Q(profile2=other)) |
-            (Q(profile1=other) & Q(profile2=self))
+            (Q(profile1=other) & Q(profile2=self)) |
+            (Q(profile1=self) & Q(profile2=self))
         ).exists()
 
         if not existing_friend:
