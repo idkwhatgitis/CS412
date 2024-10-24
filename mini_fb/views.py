@@ -128,14 +128,12 @@ class CreateFriendView(View):
         '''overwrite dispatch maehod'''
         # Get the profile pk and other_pk from the URL
         pk = self.kwargs.get('pk')
-        print(type(pk))
         other_pk = self.kwargs.get('other_pk')
-
-        profile = Profile.objects.get(pk=pk)
-        other_profile = Profile.objects.get(pk=other_pk)
-        print(type(profile))
+        if (pk!=other_pk):
+            profile = Profile.objects.get(pk=pk)
+            other_profile = Profile.objects.get(pk=other_pk)
+            profile.add_friend(other_profile)
         # Add the other profile as a friend
-        profile.add_friend(other_profile)
 
         profile_url = reverse('mini_fb:show_profile', args=[profile.pk])
         return HttpResponseRedirect(profile_url)
