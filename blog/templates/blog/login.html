@@ -1,0 +1,23 @@
+
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
+<h3>login</h3>
+
+<form method="POST" action="{% url 'blog:login' %}">
+    {% csrf_token %}
+
+    {{form}}
+    {% if request.GET.next %}
+    <input type="hidden" name="next" value="{{request.GET.next}}">
+    {% else %}
+    <input type="hidden" name="next" value="{% url 'blog:show_all' %}">
+    {% endif %}
+    <input type="submit" value="Login">
+</form>
+
+<a href="{% url 'blog:register' %}">Register here</a>
+
+{% endblock %}
+

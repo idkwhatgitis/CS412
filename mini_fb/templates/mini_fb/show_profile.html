@@ -3,8 +3,8 @@
 
 {% block content %}
 
-<h3><a href="{% url 'mini_fb:update_profile' profile.pk %}">Update Profile</a></h3>
-<a href="{% url 'mini_fb:news_feed' profile.pk %}">View News Feed</a>
+<h3><a href="{% url 'mini_fb:update_profile'%}">Update Profile</a></h3>
+<a href="{% url 'mini_fb:news_feed' %}">View News Feed</a>
 <h2 style="text-align: center;">Showing detail of {{profile.first_name}} {{profile.last_name}}</h2>
 
 <table style="margin: 0 auto;">
@@ -30,7 +30,7 @@
 
 <div>
     <h2>Status Message</h2>
-    <h3><a href="{% url 'mini_fb:URL_create_status' profile.pk %}">Create a message</a></h3>
+    <h3><a href="{% url 'mini_fb:URL_create_status' %}">Create a message</a></h3>
     
     {% if profile.get_status_messages %}
         {% for c in profile.get_status_messages %}
@@ -59,7 +59,7 @@
 </div>
 
     <h2>Friends</h2>
-    <a href="{% url 'mini_fb:friend_suggestions' profile.pk %}">Friend Suggestions</a>
+    <a href="{% url 'mini_fb:friend_suggestions' %}">Friend Suggestions</a>
         {% if profile.get_friends %}
         {% for f in profile.get_friends %}
             {% if f.profile2 == profile %}

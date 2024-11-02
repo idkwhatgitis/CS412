@@ -19,8 +19,34 @@
           <!-- <a href="{% url 'quote' %}">Quote</a> <br> -->  <!-- we can do href="/hw/", but this is more generic -->
          
           <a href="{% url 'mini_fb:show_all' %}">All Profiles</a><br>
+          
+          
 
-          <a href="{% url 'mini_fb:create_profile' %}">Create Profile</a>  
+
+          {% if request.user.is_authenticated %}
+          
+          {% if user_profile %}
+          <li><a href="{% url 'mini_fb:show_profile' user_profile.pk %}">My Profile</a></li>
+          <li><a href="{% url 'mini_fb:news_feed' %}">News feed</a></li>
+        {% endif %}
+
+
+            <form method="POST" action="{% url 'mini_fb:logout' %}">
+                {% csrf_token %}
+                <input type="submit" value="Logout">
+            </form>
+          {% else %}
+            <a href="{% url 'mini_fb:create_profile' %}">Create Profile </a><br>
+            <a href="{% url 'mini_fb:login' %}">Login </a>
+            
+            {% endif %}
+
+          </nav>
+          {% if request.user.is_authenticated %}
+          <p>logged in: {{request.user}}</p>
+          {% else %}
+          <p>not logged in</p>
+          {% endif %}
          </nav>
  
         {% block content %}

@@ -4,7 +4,7 @@
 <h2>News Feed for {{ profile.first_name }} {{ profile.last_name }}</h2>
 
 <!-- Link back to the profile page -->
-<a href="{% url 'mini_fb:show_profile' profile.pk %}">Back to Profile</a>
+<a href="{% url 'mini_fb:show_profile' profile.pk%}">Back to Profile</a>
 
 <!-- Display each status message in the news feed -->
 {% if news_feed %}

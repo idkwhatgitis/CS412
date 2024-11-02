@@ -12,7 +12,7 @@
                 <a href="{% url 'mini_fb:show_profile' suggestion.pk %}">
                     {{ suggestion.first_name }} {{ suggestion.last_name }}
                 </a>
-                <a href="{% url 'mini_fb:add_friend' profile.pk suggestion.pk %}">Add Friend</a>
+                <a href="{% url 'mini_fb:add_friend' suggestion.pk %}">Add Friend</a>
                 <img src="{{ suggestion.image_url }}" alt="{{ suggestion.first_name }}">
                 <br><br><br>
                 <!-- Link to add as a friend -->

@@ -1,11 +1,13 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 #deinfe data models
 
 # Create your models here.
 
 class Article(models.Model):
     #attributes:
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # new added user
 
     title = models.TextField(blank=False)
     author = models.TextField(blank=False)

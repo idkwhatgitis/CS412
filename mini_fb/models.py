@@ -1,12 +1,12 @@
 # File: models.py
-# Author: Shuaiqi Huang (shuang20@bu.edu) 10/19/2024
+# Author: Shuaiqi Huang (shuang20@bu.edu) 11/1/2024
 # Description: models used for mini_fb: profile and status message
 
 from django.db import models
 from django.urls import reverse
 
 from django.db.models import Q
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 
@@ -18,6 +18,7 @@ class Profile(models.Model):
     city = models.TextField(blank=False)
     email_address = models.TextField(blank=False)
     image_url = models.URLField(blank=True) ##image field 
+    user = models.ForeignKey(User, on_delete=models.CASCADE) #newly added feature for login/logout
 
     def get_absolute_url(self) -> str:
         '''upon successfully creating a profile, redirect to the newly created profile page'''
