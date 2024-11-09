@@ -1,0 +1,72 @@
+
+{% extends 'voter_analytics/base.html' %}
+{% block content %}
+<div class="container">
+   <div class="row">
+        {% include 'voter_analytics/search.html' %}
+    </div> 
+    <h1>Voters</h1>
+    <div class="row">
+        <table>
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Street address</th>
+                <th>DOB</th>
+                <th>Party affiliation</th>
+                
+                <th>Voter score</th>
+            </tr>
+    
+            {% for r in voters %}
+            <tr>
+
+                <td>
+                    <a href="{% url 'voter_analytics:voter' r.pk %}">
+                        {{ r.first_name }}
+                    </a>
+                </td>
+                
+                
+                
+                <td> {{r.last_name}}
+                </td>
+                <td>{{r.street_num}} {{r.street_name}}, {% if r.apt_num %} Apt {{ r.apt_num }},{% endif %}
+                     MA 0{{r.zipcode}}</td>
+                <td>{{r.dob}}</td>
+                <td>{{r.party}}</td>
+                
+                <td>{{r.voter_score}}</td>
+              
+
+             
+            </tr>
+            {% endfor %}
+    
+        </table>
+        
+        </div>
+    </div>
+
+    <div class="row">
+        {% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li>
+                    <span><a href="?page={{ page_obj.previous_page_number }}">Previous</a></span>
+             
+                </li>
+            {% endif %}
+                <li class="">
+                    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+                </li>
+            {% if page_obj.has_next %}
+                <li>
+                    <span><a href="?page={{ page_obj.next_page_number }}">Next</a></span>
+                </li>
+            {% endif %}
+            </ul>
+        {% endif %}
+    </div>
+    
+{% endblock %}

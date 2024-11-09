@@ -1,0 +1,92 @@
+
+{% extends 'voter_analytics/base.html' %}
+{% block content %}
+<div class="container">
+    <h1>Showing Result for {{r.first_name}} {{r.last_name}}</h1>
+    <table>
+        <tr>
+            <th>First name</th>
+            <th>Last Name</th>
+            <th>Date of birth</th>
+            <th>Registration date</th>
+            <th>Address</th>
+            <th>Zipcode</th>
+            
+        </tr>
+        
+        <tr>
+            <td>{{r.first_name}}</td>
+            <td>{{r.last_name}}</td>
+            <td>{{r.dob}}</td>
+            <td>{{r.dor}}</td>
+            <td>{{r.street_num}} {{r.street_name}}, {% if r.apt_num %} Apt {{ r.apt_num }}{% endif %}
+               </td>
+            <td>
+                {{r.zipcode}}
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td>Party</td>
+            
+            <td>Voter score</td>
+
+        </tr>
+        <br><br>
+
+        <tr>
+            <td>{{r.party}}</td>
+            
+            <td>
+                {{r.voter_score}}
+            </td>
+        </tr>
+    </table>
+
+    <h3>Did {{r.first_name}} Vote for:</h3>
+
+    
+        <h5>2020 state vote:</h5>
+        {% if r.v20s == True %}
+    <p>Yes</p>
+    {% else %}
+    <p>No</p>
+    {% endif %}
+
+
+        <h5>2021 town vote:</h5>
+
+        {% if r.v21t == True %}
+    <p>Yes</p>
+    {% else %}
+    <p>No</p>
+    {% endif %}
+        <h5>2021 primary vote:</h5>
+
+        {% if r.v21p == True %}
+    <p>Yes</p>
+    {% else %}
+    <p>No</p>
+    {% endif %}
+        <h5>2022 general vote:</h5>
+        {% if r.v22g == True %}
+    <p>Yes</p>
+    {% else %}
+    <p>No</p>
+    {% endif %}
+        <h5>2023 town vote:</h5>
+        {% if r.v23t == True %}
+    <p>Yes</p>
+    {% else %}
+    <p>No</p>
+    {% endif %}
+
+    <h2>Open address in Google Map</h2>
+    <a href="https://www.google.com/maps?q={{r.street_num}},+{{r.street_name}},+MA" target="_blank">View on Google Maps</a>
+
+        
+</div>
+
+{% endblock %}

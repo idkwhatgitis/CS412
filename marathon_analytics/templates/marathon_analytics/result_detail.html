@@ -1,0 +1,54 @@
+<!-- templates/marathon_analytics/result_detail.html -->
+{% extends 'marathon_analytics/base.html' %}
+{% block content %}
+<div class="container">
+    <h1>Showing Result for {{r.first_name}} {{r.last_name}}</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Citizenship</th>
+            <th>City, State</th>
+            <th>Division</th>
+            
+            <th>Place Overall</th>
+            <th>Place Gender</th>
+            <th>Place Division</th>
+            <th>First Half</th>
+            <th>Second Half</th>
+            <th>Finish Time</th>
+        </tr>
+        
+        <tr>
+            <td>{{r.first_name}} {{r.last_name}}</td>
+            <td>{{r.ctz}}</td>
+            <td>{{r.city}}, {{r.state}}</td>
+            <td>{{r.gender.0}} {{r.division}}</td>
+            <td>{{r.place_overall}}</td>
+            <td>{{r.place_gender}}</td>
+            <td>{{r.place_division}}</td>
+            <td>{{r.time_half1|time:"H:i:s"}}</td>
+            <td>{{r.time_half2|time:"H:i:s"}}</td>
+            <td>{{r.time_finish|time:"H:i:s"}}</td>
+        </tr>
+    </table>
+
+    <div class="row">
+        <p>
+            passed {{r.get_runner_passed}}
+        </p>
+        <p>
+            passed by {{r.get_runner_passed_by}}
+        </p>
+
+    </div>
+
+    <div class="row">
+        {{graph_div|safe}}
+    </div>
+
+    <div class="row">
+        {{pie_div|safe}}
+    </div>
+</div>
+
+{% endblock %}
