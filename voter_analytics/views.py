@@ -1,3 +1,8 @@
+# File: views.py
+# Author: Shuaiqi Huang (shuang20@bu.edu) 11/10/2024
+# Description: showing details of voter, showing a list of voter, and graph view 
+
+
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from .models import Voter
@@ -11,13 +16,15 @@ from datetime import datetime
 # Create your views here.
 
 class VotersListView(ListView):
-    '''view to display list of marathon results'''
+    '''view to display list of Voter results'''
     template_name = 'voter_analytics/voters.html'
     model = Voter
     context_object_name = "voters" #name to be used in html file
     paginate_by = 100 #limits number to show on page
 
+
     def get_queryset(self):
+        '''filtering what the user asked for'''
         queryset = super().get_queryset()
         
         # Get query parameters from the request
@@ -60,7 +67,7 @@ class VotersListView(ListView):
         return queryset
 
 class VoterDetailView(DetailView):
-
+    '''detail page of the voter, inherting model Voter'''
     template_name = 'voter_analytics/voter_detail.html'
     model = Voter
     context_object_name = 'r'
@@ -72,14 +79,17 @@ class VoterDetailView(DetailView):
 
 
 class GraphDetailView(ListView):
+    '''creating graphs based on our needs'''
     template_name = 'voter_analytics/graphs.html'
     model = Voter
     context_object_name = 'voters'
 
+    
     def get_context_data(self, **kwargs):
+        '''function to obtain data, and creating graph based on the data'''
         context = super().get_context_data(**kwargs)
 
-        # Optional filtering by party affiliation and year of birth
+        # Optional filtering by party affiliation and year of birth, and voter score, and voted in which vote
         min_birth_year = self.request.GET.get('min_birth_year', None)
         max_birth_year = self.request.GET.get('max_birth_year', None)
         score = self.request.GET.get('score', '')
@@ -90,7 +100,8 @@ class GraphDetailView(ListView):
         vote_2023t = self.request.GET.get('2023t', None)
         party = self.request.GET.get('party', None)
 
-        # Fetch and filter data based on query params
+        # obtain everything and filter from this point
+        #reuse code from previous class
         queryset = Voter.objects.all()
 
         if min_birth_year:
@@ -100,7 +111,6 @@ class GraphDetailView(ListView):
         if party:
             queryset = queryset.filter(party=party)
     
-    # Optional: Filter by specific voting data (if provided)
         if vote_2020s is not None:
             queryset = queryset.filter(v20s=vote_2020s)
         if vote_2021t is not None:
@@ -114,7 +124,7 @@ class GraphDetailView(ListView):
         if score:
             queryset = queryset.filter(voter_score=score)
 
-        # 1. Histogram for Distribution by Year of Birth
+        # Histogram for Distribution by Year of Birth
         birth_years = queryset.values_list('dob', flat=True)
         birth_years = [datetime.strptime(dob, '%Y-%m-%d').year if dob else None for dob in birth_years]
 

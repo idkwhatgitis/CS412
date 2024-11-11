@@ -1,6 +1,11 @@
+# File: models.py
+# Author: Shuaiqi Huang (shuang20@bu.edu) 11/10/2024
+# Description: models used for voter_analytics:voter fields and loading data from csv
+
 from django.db import models
 
 class Voter(models.Model):
+    #fields of the class
     first_name = models.TextField()
     last_name = models.TextField()
     street_num = models.IntegerField()
@@ -25,6 +30,7 @@ class Voter(models.Model):
         return f'{self.first_name} {self.last_name} - Zipcode: {self.zipcode}, Party: {self.party}'
 
 
+#load data from csv
 def load_data():
     '''Load data records from a CSV file.'''
     Voter.objects.all().delete()  # Start with an empty DB
