@@ -1,0 +1,58 @@
+
+{% extends 'project/base.html' %}
+
+{% block content %}
+
+<h1>You are currently looking at:</h1>
+    <div style="text-align: center;">
+        <h1>{{item.title }}</h1>
+        
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+            {% for img in item.get_images %}
+                    <img src="{{ img.image.url }}" alt="Item image" style="height: 250px;" />
+                {% endfor %}
+
+        </div>
+        
+        <p>1 unit of item for: ${{item.price}}</p>
+        <p>Left on stock: {{item.quantity_left}}</p>
+        <p>Item was updated on {{item.date}}</p>
+        <p>Seller: {{item.customer}}</p>
+        
+<a href="{% url 'project:show_user' item.customer.pk %}">View Seller Profile</a><br><br><br>
+
+
+{% if request.user.is_authenticated %}
+
+        <form action="{% url 'project:chat_detail' item.customer.pk %}" method="get"  style="display: inline;">
+            <button type="submit">
+                Message Seller
+            </button>
+        </form>
+        
+        {% if item.quantity_left > 0 %}
+        <form method="POST" action="{% url 'project:add_to_cart' item.pk %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit">
+                {% if item in request.user.cart_items.all %}
+                    Add one more to cart
+                {% else %}
+                    Add to cart
+                {% endif %}
+            </button>
+        </form>
+        {% endif %}
+    {% else %}
+        <!-- Redirect unlogged users to login page with item ID in the URL -->
+        <a href="{% url 'project:login' %}?next={% url 'project:add_to_cart' item.pk %}">
+            <button type="button">Login to Add to Cart</button>
+        </a>
+    {% endif %}
+
+    </div>
+    
+
+
+
+{% endblock %}
+

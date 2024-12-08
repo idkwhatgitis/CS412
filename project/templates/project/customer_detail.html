@@ -1,0 +1,47 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+
+<h1>{{ customer.first_name }} {{ customer.last_name }}</h1>
+<div>
+    {% if customer.image_self %}
+        <img src="{{ customer.image_self.url }}" alt="{{ customer.first_name }}'s Profile Picture">
+    {% else %}
+        <p>No profile image available</p>
+    {% endif %}
+
+    <p>Address: {{ customer.address }}</p>
+    <p>Email: {{ customer.email_address }}</p>
+    <p>Phone: {{ customer.phone_number }}</p>
+</div>
+
+<h2>Items for Sale</h2>
+<div>
+    {% if items %}
+        {% for c in items %}
+            {% if c.get_first_image %}
+                <a href="{% url 'project:show_detail' c.pk %}">
+                    <img src="{{ c.get_first_image.image.url }}" alt="First Image">
+                </a>
+            {% endif %}
+            <a href="{% url 'project:show_detail' c.pk %}" style="text-decoration: none; color: inherit;"><p>{{ c.title }}</p></a>
+        {% endfor %}
+    {% else %}
+        <p>No items for sale by {{ customer.first_name }}.</p>
+    {% endif %}
+</div>
+
+<form action="{% url 'project:add_follower' customer.pk %}" method="post">
+    {% csrf_token %}
+    <button type="submit">
+        {% if is_following %}
+            Unfollow
+        {% else %}
+            Follow
+        {% endif %}
+    </button>
+</form>
+
+
+
+{% endblock %}

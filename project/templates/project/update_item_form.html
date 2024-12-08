@@ -1,0 +1,44 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+    <br><br><br>
+    <h2>Update Item</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <table>
+            {{ form.as_table }}  <!-- This will display the fields for the item -->
+
+    
+            <tr>
+                <td><h6>Choose images to upload:</h6></td>
+                <td><input type="file" name="images" multiple></td>
+            </tr>
+
+            {% for image in item.get_images %}
+            <tr><td colspan="2">
+                <img src="{{ image.image.url }}" alt="Image" style="max-width: 200px;">
+                <td><button type="submit" name="delete_image" value="{{ image.id }}">Delete Image</button></td>
+            </td>
+            </tr>
+            {% endfor %}
+
+        </table>
+        
+        <div style="text-align: center;">
+            <button type="submit">Update Item</button>
+
+
+        </div>
+
+   
+    </div>
+
+        
+    </form>
+    
+    <form action="{% url 'project:show_self' %}">
+        <button type="submit" name="Cancel" value="Cancel">Cancel</button>
+    </form>
+    
+{% endblock %}

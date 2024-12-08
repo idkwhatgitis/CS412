@@ -1,0 +1,88 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>Notifications</h1>
+
+<form method="get" action="{% url 'project:notification' %}">
+    <div>
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" value="{{ request.GET.start_date|default_if_none:'' }}">
+    </div>
+    <div>
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date|default_if_none:'' }}">
+    </div>
+    <div>
+        <label for="sort_by">Sort By:</label>
+        <select id="sort_by" name="sort_by">
+            <option value="" {% if not request.GET.sort_by %}selected{% endif %}>Default(Latest First)</option>
+            <option value="date_asc" {% if request.GET.sort_by == 'date_asc' %}selected{% endif %}>Earliest First</option>
+            <option value="date_desc" {% if request.GET.sort_by == 'date_desc' %}selected{% endif %}>Latest First</option>
+        </select>
+    </div>
+    <button type="submit">Filter</button>
+</form>
+
+
+{% if notifications %}
+    <ul style="list-style: none; padding: 0; text-align: left;">
+        {% for notification in notifications %}
+            <li style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+                <p style="margin: 0;">{{ notification.message }}</p>
+                <small style="color: gray;">{{ notification.created_at }}</small>
+                <br>
+                {% if notification.is_read == False %}
+                <form action="{% url 'project:mark_notification_read' notification.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Mark as Read</button>
+                </form>
+                {% endif %}
+                <a href="{% url 'project:order_detail' notification.order.pk %}" style="color: blue; text-decoration: underline;">View Order Details</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% for item in items %}
+    <!-- Your item display logic here -->
+{% endfor %}
+
+<div class="pagination">
+    {% if is_paginated %}
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <form action="" method="get" style="display:inline;">
+                    <input type="hidden" name="page" value="1">
+                    <button type="submit">&laquo; First</button>
+                </form>
+                <form action="" method="get" style="display:inline;">
+                    <input type="hidden" name="page" value="{{ page_obj.previous_page_number }}">
+                    <button type="submit">Previous</button>
+                </form>
+            {% endif %}
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+                <form action="" method="get" style="display:inline;">
+                    <input type="hidden" name="page" value="{{ page_obj.next_page_number }}">
+                    <button type="submit">Next</button>
+                </form>
+                <form action="" method="get" style="display:inline;">
+                    <input type="hidden" name="page" value="{{ page_obj.paginator.num_pages }}">
+                    <button type="submit">Last &raquo;</button>
+                </form>
+            {% endif %}
+        </span>
+
+        <form method="get" action="" class="page-number-form">
+            <label for="page_number">Go to page:</label>
+            <input type="number" name="page" id="page_number" min="1" max="{{ page_obj.paginator.num_pages }}" value="{{ page_obj.number }}">
+            <button type="submit">Go</button>
+        </form>
+    {% endif %}
+</div>
+
+{% else %}
+    <p>You have no notifications.</p>
+{% endif %}
+{% endblock %}

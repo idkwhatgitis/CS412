@@ -1,0 +1,190 @@
+/* General body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #fff;
+    margin: 0;                  /* Reset margins */
+    padding: 0;                 /* Reset padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;        /* Center all elements horizontally */
+    width: 100%;                /* Make the body span the full width */
+    min-height: 100vh;          /* Ensure the body spans the full viewport height */
+}
+
+/* Header */
+header {
+    display: flex;              /* Use flexbox for alignment */
+    justify-content: space-between; /* Spread items evenly horizontally */
+    align-items: center;        /* Center items vertically within the header */
+    width: 100%;                /* Full width of the page */
+    background-color: #222;
+    color: white;
+    padding: 20px;
+    box-sizing: border-box;     /* Include padding in width calculation */
+}
+
+
+/* Navigation styles */
+nav {
+    width: 100%;                /* Full width of navigation */
+    padding: 20px;
+    background-color: #08082cb0; /* Light blue background */
+    color: white;
+    text-align: center;         /* Center navigation content */
+}
+
+nav a {
+    color: white;               /* Default text color */
+    text-decoration: none;      /* Remove underline */
+    margin: 0 10px;             /* Add spacing between links */
+}
+
+nav a:visited {
+    color: #d3d3d3;             /* Change this to your desired visited link color */
+}
+
+nav a:hover {
+    color: #ffa500;             /* Change color on hover */
+}
+
+/* Main content area */
+main {
+    width: 100%;                /* Make the main content fill the entire width */
+    padding: 20px;
+    background-color: #222;
+    color: white;
+    text-align: center;         /* Center text in main content */
+    box-sizing: border-box;     /* Include padding in width calculation */
+    flex-grow: 1;               /* Allow main content to grow and fill available vertical space */
+}
+
+/* Center images */
+img {
+    width: 300px; 
+    height: 300px;
+    display: block;             /* Make the image a block element */
+    margin: 20px auto;          /* Center the image horizontally */
+}
+
+/* Footer */
+footer {
+    width: 100%;                /* Make the footer span the full width */
+    background-color: #222;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    box-sizing: border-box;     /* Include padding in width calculation */
+}
+
+/* Centered Paragraphs */
+p {
+    text-align: center;
+}
+
+
+.auth-links {
+    position: absolute;
+    top: 10px; /* Distance from the top */
+    left: 10px; /* Distance from the left */
+    display: flex;
+    flex-direction: column; /* Arrange links vertically */
+    gap: 5px; /* Add space between links */
+}
+
+.auth-links a, .auth-links p {
+    margin: 0; /* Remove extra spacing */
+    text-decoration: none; /* Optional: Remove underline from links */
+    color: #000; /* Optional: Set text color */
+}
+
+.auth-links a:hover {
+    text-decoration: underline; /* Add underline on hover */
+    color: #007BFF; /* Optional: Change color on hover */
+}
+
+
+.chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto; /* Center the chat interface horizontally */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    max-width: 60%;
+    word-wrap: break-word;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin: 5px 0;
+    display: inline-block;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.message.sent {
+    align-self: flex-end; /* Aligns sent messages to the right */
+    background-color: #d4f1f4; /* Light blue for sent messages */
+    text-align: left;
+    color: #03396c;
+}
+
+.message.received {
+    align-self: flex-start; /* Aligns received messages to the left */
+    background-color: #f0f0f0; /* Light gray for received messages */
+    color: #03396c;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 5px;
+    text-align: right;
+}
+
+
+form {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+form button{
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+.cart-footer {
+    margin-top: 20px;
+    text-align: left;
+}
+.cart-footer p {
+    display: inline-block;
+    margin-right: 20px;
+    font-weight: bold;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

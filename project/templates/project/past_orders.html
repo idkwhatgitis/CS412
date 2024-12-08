@@ -1,0 +1,98 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>Your Past Orders</h1>
+
+<form method="get" action="{% url 'project:past_order' %}">
+    <div>
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" value="{{ request.GET.start_date|default_if_none:'' }}">
+    </div>
+    <div>
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date|default_if_none:'' }}">
+    </div>
+    <div>
+        <label for="sort_by">Sort By:</label>
+        <select id="sort_by" name="sort_by">
+            <option value="" {% if not request.GET.sort_by %}selected{% endif %}>Default(Latest First)</option>
+            <option value="date_asc" {% if request.GET.sort_by == 'date_asc' %}selected{% endif %}>Earliest First</option>
+            <option value="date_desc" {% if request.GET.sort_by == 'date_desc' %}selected{% endif %}>Latest First</option>
+        </select>
+    </div>
+    <button type="submit">Filter</button>
+</form>
+
+
+
+{% if customer_orders %}
+    <ul>
+        {% for customer_order in customer_orders %}
+        <li>
+            <h3>Order Placed on {{ customer_order.date }}</h3>
+            <ul>
+                {% for order in customer_order.orders.all %}
+                <li>
+                    <p>Item: {% if order.item %}{{ order.item.title }}{% else %}Item Deleted by seller{% endif %}</p>
+
+                    <p>Quantity: {{ order.quantity }}</p>
+                   
+                    <p>Seller: <a href="{% url 'project:show_user' order.customer.pk %}">
+                        {{ order.seller.first_name }} {{ order.seller.last_name }}</a></p>
+
+                </li>
+                {% endfor %}
+            </ul>
+            <p>Total Price: ${{ customer_order.get_total_price }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+
+
+    <div class="pagination">
+        {% if is_paginated %}
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                <form action="" method="get" style="display:inline;">
+                    <input type="hidden" name="page" value="1">
+                    <button type="submit">&laquo; First</button>
+                </form>
+
+                <!-- Previous Page Button -->
+                <form action="" method="get" style="display:inline;">
+                    <input type="hidden" name="page" value="{{ page_obj.previous_page_number }}">
+                    <button type="submit">Previous</button>
+                </form>
+                    
+
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                <form action="" method="get" style="display:inline;">
+                    <input type="hidden" name="page" value="{{ page_obj.next_page_number }}">
+                    <button type="submit">Next</button>
+                </form>
+
+                <!-- Last Page Button -->
+                <form action="" method="get" style="display:inline;">
+                    <input type="hidden" name="page" value="{{ page_obj.paginator.num_pages }}">
+                    <button type="submit">Last &raquo;</button>
+                </form>
+                {% endif %}
+            </span>
+
+            <form method="get" action="" class="page-number-form">
+                <label for="page_number">Go to page:</label>
+                <input type="number" name="page" id="page_number" min="1" max="{{ page_obj.paginator.num_pages }}" value="{{ page_obj.number }}">
+                <button type="submit">Go</button>
+            </form>
+        {% endif %}
+    </div>
+{% else %}
+    <p>You have no past orders.</p>
+{% endif %}
+{% endblock %}

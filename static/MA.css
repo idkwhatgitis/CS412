@@ -45,7 +45,7 @@ nav a:hover {
 
 /* Main content area */
 main {
-    width: 80%; /* Set main content to 70% of container */
+    width: 100%; /* Set main content to 70% of container */
     padding: 20px;
     background-color: #222;
     color: white;

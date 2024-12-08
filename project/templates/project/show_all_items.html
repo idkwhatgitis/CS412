@@ -1,0 +1,82 @@
+
+{% extends 'project/base.html' %}
+
+{% block content %}
+
+<h1>What do you want to buy today?</h1>
+
+<form method="get" action="{% url 'project:show_all' %}">
+    <div>
+        <label for="search_title">Item Name Contains:</label>
+        <input type="text" id="search_title" name="search_title">
+    </div>
+    <div>
+        <label for="sort_by">Sort By:</label>
+        <select id="sort_by" name="sort_by">
+            <option value="" {% if not request.GET.sort_by %}selected{% endif %}>Default(Latest First)</option>
+            <option value="price_asc" {% if request.GET.sort_by == 'price_asc' %}selected{% endif %}>Cheapest First</option>
+            <option value="price_desc" {% if request.GET.sort_by == 'price_desc' %}selected{% endif %}>Expensive First</option>
+            <option value="date_asc" {% if request.GET.sort_by == 'date_asc' %}selected{% endif %}>Oldest Released First</option>
+            <option value="date_desc" {% if request.GET.sort_by == 'date_desc' %}selected{% endif %}>Newest Released First</option>
+        </select>
+    </div>
+    <button type="submit">Filter</button>
+</form>
+
+
+    {% for a in items %}
+    <main class="grid-container"></main>
+ 
+    <div>
+        {% if a.get_first_image %}
+            <a href="{% url 'project:show_detail' a.pk %}">
+            <img src="{{ a.get_first_image.image.url }}" alt="First Image"></a>
+        {% endif %}
+        
+        <a href="{% url 'project:show_detail' a.pk %}" style="text-decoration: none; color: inherit;"><p>{{ a.title }}</p></a>
+    </div>
+</main>
+    
+    {% endfor %}
+
+    <div class="pagination">
+        {% if is_paginated %}
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <form action="" method="get" style="display:inline;">
+                        <input type="hidden" name="page" value="1">
+                        <button type="submit">&laquo; First</button>
+                    </form>
+                    <form action="" method="get" style="display:inline;">
+                        <input type="hidden" name="page" value="{{ page_obj.previous_page_number }}">
+                        <button type="submit">Previous</button>
+                    </form>
+                {% endif %}
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <form action="" method="get" style="display:inline;">
+                        <input type="hidden" name="page" value="{{ page_obj.next_page_number }}">
+                        <button type="submit">Next</button>
+                    </form>
+                    <form action="" method="get" style="display:inline;">
+                        <input type="hidden" name="page" value="{{ page_obj.paginator.num_pages }}">
+                        <button type="submit">Last &raquo;</button>
+                    </form>
+                {% endif %}
+            </span>
+    
+            <form method="get" action="" class="page-number-form">
+                <label for="page_number">Go to page:</label>
+                <input type="number" name="page" id="page_number" min="1" max="{{ page_obj.paginator.num_pages }}" value="{{ page_obj.number }}">
+                <button type="submit">Go</button>
+            </form>
+        {% endif %}
+    </div>
+
+
+
+
+{% endblock %}
+

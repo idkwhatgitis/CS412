@@ -1,0 +1,103 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: separate; /* Prevents the cells from collapsing into one another */
+        border-spacing: 10px; /* Adds spacing between table cells */
+    }
+
+    th, td {
+        padding: 15px; /* Add padding to each cell for more space */
+        text-align: left;
+        vertical-align: middle; /* Aligns text in the center vertically */
+    }
+
+    .button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    a.button {
+        padding: 8px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none; /* Ensure no underline */
+        font-weight: normal;   /* Ensure text is not bold */
+        display: inline-block; /* Ensures it behaves like a block element */
+        text-align: center;    /* Centers text if it's within the anchor tag */
+    }
+</style>
+
+<h1>Shopping Cart</h1>
+
+<h4>Note: Once you submit the order, you cannot cancel it! If you have to, message the seller!</h4>
+<h4>To message the seller, click the item's name, and a message seller button will be and the end of webpage</h4>
+
+{% if cart.cart_items.exists %}
+<form method="post" action="{% url 'project:shopping_cart' %}">
+    {% csrf_token %}
+    
+    <table>
+        <tr>
+            <th>Select</th>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+        {% for cart_item in cart.cart_items.all %}
+        <tr>
+            <td>
+                <!-- Checkbox for selecting items to delete -->
+                <input type="checkbox" name="delete_items" value="{{ cart_item.id }}">
+            </td>
+            <td>  
+                <a href="{% url 'project:show_detail' cart_item.item.pk %}" style="text-decoration: none; color: inherit;"><p>{{ cart_item.item.title }}</p></a>
+              </td>
+            <td>
+                <!-- Input field for quantity -->
+                <input type="number" name="quantity_{{ cart_item.id }}" value="{{ cart_item.quantity }}" min="1" max="{{ cart_item.item.quantity_left }}">
+            </td>
+            <td>${{ cart_item.item.price }}</td>
+            <td>${{ cart_item.get_total_price }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="2">                
+                <div style="margin-top: 20px; position: relative;">
+                    <!-- Hidden input for identifying delete action -->
+                    <button type="submit" name="action" value="delete" class="btn btn-danger">Delete Selected</button>
+                </div>
+            </td>
+
+            <td>
+                <!-- Hidden input for identifying update action -->
+                <button type="submit" name="action" value="update" class="btn btn-warning">Update Cart</button>
+            </td>
+
+            <td colspan="2">
+                <div style="margin-top: 20px;">
+                    <p><strong>Total Price: </strong>${{ cart.get_total_price }}</p>
+                    <!-- Hidden input for identifying submit order action -->
+                    <button type="submit" name="action" value="submit_order" class="btn btn-success">Submit Order</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>
+
+{% else %}
+    <p>Your shopping cart is empty!</p>
+{% endif %}
+
+{% endblock %}

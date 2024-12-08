@@ -1,0 +1,22 @@
+{% extends "project/base.html" %}
+{% block content %}
+<h2>Your Conversations</h2>
+<ul>
+    {% for conversation in conversations %}
+      
+
+            <li>
+                <form action="{% url 'project:chat_detail' conversation.pk %}" style="display:inline;">
+                    <button type="submit">
+                        Chat with {{ conversation.first_name }} {{ conversation.last_name }}
+                    </button>
+                </form>
+            </li>
+
+        <br>
+    {% empty %}
+        <p>No conversations yet.</p>
+    {% endfor %}
+</ul>
+{% endblock %}
+

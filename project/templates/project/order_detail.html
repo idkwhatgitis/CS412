@@ -1,0 +1,22 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+
+<h1>Order Details</h1>
+
+
+
+
+<p>Customer: {{ order.customer.first_name }} {{ order.customer.last_name }}</p>
+<p>Order Date: {{ order.date }}</p>
+<p>Item: {{ order.item.title }}</p>
+<p>Quantity: {{ order.quantity }}</p>
+<p>Total Price: ${{ order.get_total_price }}</p>
+
+<form action="{% url 'project:show_user' order.customer.pk %}">
+    <button type="submit">
+        To {{ order.customer.first_name }}'s personal page
+    </button>
+</form>
+
+{% endblock %}

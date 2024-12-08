@@ -1,0 +1,83 @@
+
+<!-- same file name as the views name 
+ base page from which all other pages will inherit-->
+
+
+ {% load static %}
+
+ <html>
+     <head>
+         <link rel = "stylesheet" href = "{% static 'styles_project.css' %}"> 
+         <title>
+            Shopping now
+         </title>
+     </head>
+ 
+ 
+     <body>
+         
+        <nav style="display: flex; justify-content: space-between; align-items: flex-start; padding: 10px;">
+            <!-- Left side -->
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                <a href="{% url 'project:show_all' %}" style="text-decoration: none; margin-bottom: 10px;">Home</a>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'project:following_list' %}" style="text-decoration: none; margin-bottom: 10px;">My Following</a>
+                <a href="{% url 'project:follower_list' %}" style="text-decoration: none; margin-bottom: 10px;">My Follower</a>
+                <a href="{% url 'project:notification' %}" style="text-decoration: none; margin-bottom: 10px; position: relative;">
+                    Notifications
+                    {% if has_unread %}
+                        <span style="position: absolute; top: -5px; right: -10px; width: 10px; height: 10px; background-color: red; border-radius: 50%;"></span>
+                    {% endif %}
+                </a>
+                
+                <p style="margin-bottom: 10px; margin-left: 10px;">
+                    Logged in: {{ request.user }}
+                </p>
+                {% endif %}
+            </div>
+
+            
+            <!-- Right side -->
+            <div style="text-align: right;">
+                {% if request.user.is_authenticated %}
+                    <form method="POST" action="{% url 'project:logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <a href="#" onclick="this.closest('form').submit();" 
+                           style="text-decoration: none; display: block; margin-bottom: 10px;">
+                            Logout
+                        </a>
+                    </form>
+                    <a href="{% url 'project:show_self' %}" style="display: block; margin-bottom: 10px; text-decoration: none;">
+                        Account Info
+                        {% if has_unread %}
+                            <span class="red-dot"></span>
+                        {% endif %}
+                    </a>
+                    
+                    <a href="{% url 'project:shopping_cart' %}" style="display: block; margin-bottom: 10px; text-decoration: none;">
+                        Shopping Cart
+                    </a>
+                    <a href="{% url 'project:chat_list' %}" style="display: block; margin-bottom: 10px; text-decoration: none;">
+                        Messages
+                    </a>
+                    <a href="{% url 'project:past_order' %}" style="display: block; margin-bottom: 10px; text-decoration: none;">
+                        Past Orders
+                    </a>
+                    
+                {% else %}
+                    <a href="{% url 'project:login' %}" style="display: block; margin-bottom: 10px; text-decoration: none;">
+                        Login
+                    </a>
+                    <a href="{% url 'project:create_customer' %}" style="display: block; margin-bottom: 10px; text-decoration: none;">
+                        Register
+                    </a>
+                {% endif %}
+            </div>
+        </nav>
+        
+
+        {% block content %}
+        <!-- put stuff/content here-->
+        {% endblock %}
+     </body>
+ </html>

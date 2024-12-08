@@ -1,0 +1,33 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+    <br><br><br>
+    <h2>Create Item</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <table>
+            {{ form.as_table }}  <!-- This will display the fields for the item -->
+            
+            <!-- File input for image uploads -->
+            <tr>
+                <td><h6>Choose images to upload:</h6></td>
+                <td><input type="file" name="images" multiple></td>
+            </tr>
+        </table>
+        
+        <div style="text-align: center;">
+            <button type="submit">Create Item</button>
+        </div>
+    </form>
+
+    <form action="{% url 'project:show_self' %}">
+        <button type="submit">
+            Cancel
+        </button>
+    </form>
+
+
+    
+{% endblock %}

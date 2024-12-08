@@ -1,0 +1,27 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+    <h2>Your Followers</h2>
+    {% if followers %}
+        <ul>
+            {% for follower in followers %}
+                <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h4 style="margin: 0; flex-grow: 1;">
+                        <a href="{% url 'project:show_user' follower.pk %}" style="text-decoration: none; color: inherit;">
+                            {{ follower.first_name }} {{ follower.last_name }}&nbsp;&nbsp;</a>
+                    </h4>
+                    <form action="{% url 'project:chat_detail' follower.pk %}" method="get"  style="display: inline;">
+                        <button type="submit">
+                            Message {{ follower.first_name }} {{ follower.last_name }}
+                        </button>
+                    </form>
+                    
+                </li>
+            {% empty %}
+                <p>You are not following anyone yet.</p>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no followers yet.</p>
+    {% endif %}
+{% endblock %}

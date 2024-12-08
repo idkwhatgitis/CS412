@@ -1,0 +1,25 @@
+
+{% extends 'project/base.html' %}
+
+{% block content %}
+
+<h3>login</h3>
+
+<form method="POST" action="{% url 'project:login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+    {% else %}
+        <input type="hidden" name="next" value="{% url 'project:show_all' %}">
+    {% endif %}
+    
+    <button type="submit">Log In</button>
+</form>
+
+
+<h5>Don't have an account yet? Click 'Register' on the upper right corner for an account!</h5>
+
+
+{% endblock %}

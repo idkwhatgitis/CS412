@@ -1,0 +1,26 @@
+
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h2>Edit Account Information</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}</table>
+    <table>
+        <td><button type="submit">Save Changes</button></td>
+    </table>
+    
+</form>
+
+
+<form action="{% url 'project:show_self' %}">
+    <button type="submit">
+        Cancel
+    </button>
+</form>
+
+{% endblock %}
+
+

@@ -1,0 +1,7 @@
+{% extends 'project/base.html' %}
+
+{% block content %}
+<h1>Checkout Successful</h1>
+<p>Your order has been successfully placed!</p>
+<a href="{% url 'project:show_all' %}" class="btn btn-primary">Continue Shopping</a>
+{% endblock %}
