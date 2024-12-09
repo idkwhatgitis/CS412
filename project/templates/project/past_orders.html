@@ -54,44 +54,63 @@
             <span class="step-links">
                 {% if page_obj.has_previous %}
                 <form action="" method="get" style="display:inline;">
+                    <!-- Include filter parameters -->
+                    <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+                    <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+                    <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
                     <input type="hidden" name="page" value="1">
                     <button type="submit">&laquo; First</button>
                 </form>
-
-                <!-- Previous Page Button -->
+    
                 <form action="" method="get" style="display:inline;">
+                    <!-- Include filter parameters -->
+                    <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+                    <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+                    <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
                     <input type="hidden" name="page" value="{{ page_obj.previous_page_number }}">
                     <button type="submit">Previous</button>
                 </form>
-                    
-
                 {% endif %}
-
+    
                 <span class="current">
                     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
                 </span>
-
+    
                 {% if page_obj.has_next %}
                 <form action="" method="get" style="display:inline;">
+                    <!-- Include filter parameters -->
+                    <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+                    <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+                    <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
                     <input type="hidden" name="page" value="{{ page_obj.next_page_number }}">
                     <button type="submit">Next</button>
                 </form>
-
-                <!-- Last Page Button -->
+    
                 <form action="" method="get" style="display:inline;">
+                    <!-- Include filter parameters -->
+                    <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+                    <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+                    <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
                     <input type="hidden" name="page" value="{{ page_obj.paginator.num_pages }}">
                     <button type="submit">Last &raquo;</button>
                 </form>
                 {% endif %}
             </span>
-
+    
             <form method="get" action="" class="page-number-form">
                 <label for="page_number">Go to page:</label>
+                <!-- Include filter parameters -->
+                <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+                <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+                <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
                 <input type="number" name="page" id="page_number" min="1" max="{{ page_obj.paginator.num_pages }}" value="{{ page_obj.number }}">
                 <button type="submit">Go</button>
             </form>
         {% endif %}
     </div>
+    
+
+
 {% else %}
     <p>You have no past orders.</p>
 {% endif %}

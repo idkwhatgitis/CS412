@@ -45,17 +45,22 @@
     {% for item in items %}
     <!-- Your item display logic here -->
 {% endfor %}
-
 <div class="pagination">
     {% if is_paginated %}
         <span class="step-links">
             {% if page_obj.has_previous %}
                 <form action="" method="get" style="display:inline;">
                     <input type="hidden" name="page" value="1">
+                    <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+                    <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+                    <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
                     <button type="submit">&laquo; First</button>
                 </form>
                 <form action="" method="get" style="display:inline;">
                     <input type="hidden" name="page" value="{{ page_obj.previous_page_number }}">
+                    <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+                    <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+                    <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
                     <button type="submit">Previous</button>
                 </form>
             {% endif %}
@@ -65,10 +70,16 @@
             {% if page_obj.has_next %}
                 <form action="" method="get" style="display:inline;">
                     <input type="hidden" name="page" value="{{ page_obj.next_page_number }}">
+                    <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+                    <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+                    <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
                     <button type="submit">Next</button>
                 </form>
                 <form action="" method="get" style="display:inline;">
                     <input type="hidden" name="page" value="{{ page_obj.paginator.num_pages }}">
+                    <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+                    <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+                    <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
                     <button type="submit">Last &raquo;</button>
                 </form>
             {% endif %}
@@ -77,11 +88,13 @@
         <form method="get" action="" class="page-number-form">
             <label for="page_number">Go to page:</label>
             <input type="number" name="page" id="page_number" min="1" max="{{ page_obj.paginator.num_pages }}" value="{{ page_obj.number }}">
+            <input type="hidden" name="start_date" value="{{ request.GET.start_date }}">
+            <input type="hidden" name="end_date" value="{{ request.GET.end_date }}">
+            <input type="hidden" name="sort_by" value="{{ request.GET.sort_by }}">
             <button type="submit">Go</button>
         </form>
     {% endif %}
 </div>
-
 {% else %}
     <p>You have no notifications.</p>
 {% endif %}
