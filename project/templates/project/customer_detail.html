@@ -31,16 +31,20 @@
     {% endif %}
 </div>
 
-<form action="{% url 'project:add_follower' customer.pk %}" method="post">
-    {% csrf_token %}
-    <button type="submit">
-        {% if is_following %}
-            Unfollow
-        {% else %}
-            Follow
-        {% endif %}
-    </button>
-</form>
+
+{% if user.is_authenticated %}
+    <form action="{% url 'project:add_follower' customer.pk %}" method="post">
+        {% csrf_token %}
+        <button type="submit">
+            {% if is_following %}
+                Unfollow
+            {% else %}
+                Follow
+            {% endif %}
+        </button>
+    </form>
+{% endif %}
+
 
 
 

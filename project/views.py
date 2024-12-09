@@ -277,7 +277,7 @@ class FollowingsListView(ListView):
         if not customer:
             return Customer.objects.none()  # Return an empty queryset if no customer is linked
 
-        queryset = Customer.objects.filter(following__customer1=customer)
+        queryset = Customer.objects.filter(followers__customer1=customer)
 
         # Get search input
         search_last = self.request.GET.get('search_last', '').strip()
