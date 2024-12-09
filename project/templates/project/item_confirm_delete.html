@@ -10,9 +10,7 @@
 <form method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Delete</button>
+    <button type="submit" formaction="{% url 'project:show_self' %}" formmethod="get" class="btn btn-secondary">Cancel</button>
 </form>
 
-<form action="{% url 'project:show_detail' item.id %}">
-    <button type="submit" name="Cancel" value="Cancel">Cancel</button>
-</form>
 {% endblock %}

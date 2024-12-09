@@ -1,7 +1,7 @@
 # File: views.py
-# Author: Shuaiqi Huang (shuang20@bu.edu) 11/1/2024
-# Description: presentation to the user: showall profiles and detail profiles
-#creating profile and status message, and redirecting/rendering
+# Author: Shuaiqi Huang (shuang20@bu.edu) 12/08/2024
+# Description: all views that the web applictaion use, including login/logout of user
+# also includes form that applications that will be used
 
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -9,18 +9,10 @@ from .models import *
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, TemplateView, FormView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
-
 from .forms import *
 from django.contrib import messages
-
-from typing import Any
 from django.urls import reverse
-
 from django.http import HttpResponseRedirect
-
-import random
-
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -29,14 +21,16 @@ from django.shortcuts import redirect
 
 
 class ShowAllItemView(ListView):
+    '''shows all the item, which is the homepage, and allows filtering based on criteria
+    to avoid too many item being dispaged, add a paginate_by field to limit the number of items shown'''
     model = Item
     template_name = 'project/show_all_items.html'
     context_object_name = 'items'
     paginate_by = 10
 
     def get_queryset(self):
+        '''once search form is submitted, filter out the unmatching criteria'''
         queryset = super().get_queryset()
-
 
         # Get filter and sort parameters
         search_title = self.request.GET.get('search_title', '')
@@ -65,19 +59,22 @@ class ShowAllItemView(ListView):
 
 
 class ShowDetailItemView(DetailView):
+    '''Detail of an item, can be accessed many ways, one of the way is by hitting the item
+    in the ShowItemsView'''
     model = Item
     template_name = 'project/item_detail.html'
     context_object_name = 'item'
 
 
 class ShowUserPageView(DetailView):
-    '''show a specific profile from the databse'''
+    '''show a specific account from the databse, this is the version that doesnt require any logins
+    this does not include updating account info, and selling new items, etc.'''
     model = Customer
     template_name = 'project/customer_detail.html'
     context_object_name = 'customer'
 
     def get_context_data(self, **kwargs):
-        # Get the default context
+        '''showuserpageview versin of get_context_data'''
         context = super().get_context_data(**kwargs)
 
         # Check if the logged-in user is following the current customer
@@ -86,7 +83,7 @@ class ShowUserPageView(DetailView):
         if self.request.user.is_authenticated:
             is_following = self.request.user.customer.is_following(customer)
 
-        items = customer.items.filter(is_deleted=False)  # Assuming `customer.items` is a related_name for `Item`
+        items = customer.items.filter(is_deleted=False) 
         context['items'] = items
 
         # Add the 'is_following' status to the context
@@ -94,7 +91,9 @@ class ShowUserPageView(DetailView):
         return context
 
 class ShowUserSelfView(LoginRequiredMixin, DetailView):
-    '''show a specific profile from the databse'''
+    '''show a specific account from the database, this version requires login, which allows
+    update of info, selling an item, updating an existing item. Additionally, the user who is not
+    associated with this account cannot access this page, but only the ShowUserPageView(previous view)'''
     model = Customer
     template_name = 'project/show_user.html'
     context_object_name = 'customer'
@@ -104,17 +103,17 @@ class ShowUserSelfView(LoginRequiredMixin, DetailView):
         return get_object_or_404(Customer, user=self.request.user)
     
     def get_context_data(self, **kwargs):
-        # Get the default context
         context = super().get_context_data(**kwargs)
 
-        # Filter out soft-deleted items
+        # Filter out soft-deleted items so that it does not get shown
         customer = self.get_object()
-        items = customer.items.filter(is_deleted=False)  # Assuming `customer.items` is a related_name for `Item`
+        items = customer.items.filter(is_deleted=False)
         context['items'] = items
         return context
 
 class UpdateCustomerView(LoginRequiredMixin, UpdateView):
-    '''show a specific profile from the databse'''
+    '''update an existing customer, and have to be the correct user to make such update, updates
+    are performed using the form in forms.py'''
     model = Customer
     template_name = 'project/update_customer_form.html'
     form_class = UpdateCustomerForm
@@ -128,18 +127,20 @@ class UpdateCustomerView(LoginRequiredMixin, UpdateView):
         return Customer.objects.get(user=self.request.user)
 
 class ShowCartView(LoginRequiredMixin, TemplateView):
+    '''showing the shopping cart of the user, the user can only access the shopping cart that associated
+    with them, and has no access to other people's shopping cart, shopping cart allows CRUD on item'''
     model = ShoppingCart
     template_name = 'project/shopping_cart.html'
     context_object_name = 'cart'
 
 
     def post(self, request, *args, **kwargs):
+        '''once a submit of form is observed, do corresponding action'''
         # Get the shopping cart associated with the logged-in user
         cart = ShoppingCart.objects.get(user=request.user)
         action = request.POST.get('action')  # Action to be performed
 
         if action == 'update':
-            print("TRUEEE")
             # Update quantities for each item in the cart
             for cart_item in cart.cart_items.all():
                 quantity_key = f'quantity_{cart_item.id}'
@@ -157,13 +158,14 @@ class ShowCartView(LoginRequiredMixin, TemplateView):
                     except ValueError:
                         # Handle invalid quantity (e.g., non-integer input)
                         continue
-            return redirect('project:shopping_cart')
+            return redirect('project:shopping_cart') #redirect after update completes
 
         elif action == 'delete':
             # Delete selected items from the cart
             delete_items = request.POST.getlist('delete_items')
             if delete_items:
                 cart.cart_items.filter(id__in=delete_items).delete()
+            return redirect('project:shopping_cart') #redirect after delete completes
 
         elif action == 'submit_order':
             # Process the order and create a new order object
@@ -197,7 +199,7 @@ class ShowCartView(LoginRequiredMixin, TemplateView):
                     seller=cart_item.item.customer,
                 )
 
-                # Notify the seller
+                # Notify the seller by creating a Notification object
                 Notification.objects.create(
                     user=cart_item.item.customer.user,
                     message=(
@@ -208,7 +210,7 @@ class ShowCartView(LoginRequiredMixin, TemplateView):
                     order=order,
                 )
 
-                # Reduce stock
+                # Reduce stock of the item
                 cart_item.item.quantity_left -= cart_item.quantity
                 cart_item.item.save()
 
@@ -227,6 +229,7 @@ class ShowCartView(LoginRequiredMixin, TemplateView):
 
 
     def get_context_data(self, **kwargs):
+        '''get context data for shopping cart, which shows the items that the shopping cart has'''
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             cart, created = ShoppingCart.objects.get_or_create(user=self.request.user)
@@ -239,13 +242,8 @@ class ShowCartView(LoginRequiredMixin, TemplateView):
 
 
 
-class ShowSubscriberView(ListView):
-    '''show a specific profile from the databse'''
-    model = User
-    template_name = 'project/show_subscriber.html'
-    context_object_name = 'users'
-
 class AddFollowerView(LoginRequiredMixin, View):
+    '''adding a following relationship, for one user to follow/unfollow another user'''
     model = Follower
 
     def post(self, request, customer_pk):
@@ -267,33 +265,60 @@ class AddFollowerView(LoginRequiredMixin, View):
         return redirect('project:show_user', pk=customer_pk)
 
 class FollowingsListView(ListView):
+    '''display a list of user that one is following'''
     model = Follower
     template_name = 'project/following_list.html'
     context_object_name = 'followers'
 
+
     def get_queryset(self):
-        customer = self.request.user.customer  # Ensure `customer` exists
-        if customer:  # Check if the user has a profile (customer) linked
-            # Get the people (customer2) the current user (customer1) is following
-            return Customer.objects.filter(following__customer1=customer)
-        return Customer.objects.none()
+        '''Get the users the current user is following and filter by search query'''
+        customer = self.request.user.customer  
+        if not customer:
+            return Customer.objects.none()  # Return an empty queryset if no customer is linked
+
+        queryset = Customer.objects.filter(following__customer1=customer)
+
+        # Get search input
+        search_last = self.request.GET.get('search_last', '').strip()
+        search_first = self.request.GET.get('search_first', '').strip()
+
+        if search_last:
+            queryset = queryset.filter(last_name__icontains=search_last)
+    
+        if search_first:
+            queryset = queryset.filter(first_name__icontains=search_first)
+           
+        return queryset
     
 class FollowersListView(ListView):
+    '''display a list of user that is following the user'''
     model = Follower
     template_name = 'project/follower_list.html'
     context_object_name = 'followers'
-
+    
     def get_queryset(self):
-        customer = self.request.user.customer  # Ensure `customer` exists
-        if customer:  # Check if the user has a profile (customer) linked
-            # Get the people (customer2) the current user (customer1) is following
-            return Customer.objects.filter(following__customer2=customer)
-        return Customer.objects.none()
+        '''Get the users the current user is following and filter by search query'''
+        customer = self.request.user.customer  
+        if not customer:
+            return Customer.objects.none()  # Return an empty queryset if no customer is linked
+
+        # Get the search input from the request
+        queryset = Customer.objects.filter(following__customer2=customer)
+        # Apply filters based on input values
+        search_last = self.request.GET.get('search_last', '').strip()
+        search_first = self.request.GET.get('search_first', '').strip()
+
+        if search_last:
+            queryset = queryset.filter(last_name__icontains=search_last)
+
+        if search_first:
+            queryset = queryset.filter(first_name__icontains=search_first)
+
+        return queryset
 
 class CreateCustomerView(CreateView):
-    '''A view to create message on profile
-        on get: send back the for for dispay
-        on post: read/process the form and save it to the DB
+    '''A view to create a new user, and uses form in forms.py for creation
     '''
 
     form_class = CreateCustomerForm #form that forms.py has
@@ -311,7 +336,7 @@ class CreateCustomerView(CreateView):
     def dispatch(self, request, *args, **kwargs):
         #handle logic when trying to create new profile
         if request.user.is_authenticated:
-            # If user has a profile, redirect them to the main page
+            # If user has a profile, redirect them to the main page, but this shouldn't happen
             if Customer.objects.filter(user=request.user).exists():
                 return HttpResponseRedirect(reverse('project:show_all'))
    
@@ -342,6 +367,7 @@ class CreateCustomerView(CreateView):
 
 
 class CustomLoginView(LoginView):
+    '''login page that was designed, a very simple html page'''
     template_name = 'project/login.html'
 
     def get_success_url(self):
@@ -355,10 +381,10 @@ class CustomLoginView(LoginView):
     
 
 class AddToCartView(LoginRequiredMixin, View):
-    
+    '''adding an item to the cart, requires the user to login for such option to even exist'''
 
     def get(self, request, item_pk):
-        # Redirected after login, simulate the `POST` action
+        # Redirected after login, simulate the `POST` action as we are not using a form
         return self.post(request, item_pk)
 
     def post(self, request, item_pk):
@@ -382,10 +408,13 @@ class AddToCartView(LoginRequiredMixin, View):
     
 
 class ChatListView(LoginRequiredMixin, ListView):
+    '''View to see a list of chat messages and includes history messages, user is able
+    to see those history if they click into their chat window'''
     template_name = 'project/chat_list.html'
     context_object_name = 'conversations'
 
     def get_queryset(self):
+        #get the ChatMessage and filter out unique user that we chat with, to display a list of users that we chatted
         customer = self.request.user.customer
         sent_to = ChatMessage.objects.filter(sender=customer).values_list('receiver', flat=True)
         received_from = ChatMessage.objects.filter(receiver=customer).values_list('sender', flat=True)
@@ -393,11 +422,13 @@ class ChatListView(LoginRequiredMixin, ListView):
         return unique_customers
 
 class ChatDetailView(LoginRequiredMixin, ListView, FormView):
+    '''Detail view of chat, which will be directed from ChatListView'''
     template_name = 'project/chat_detail.html'
     context_object_name = 'messages'
     form_class = ChatMessage
 
     def get_queryset(self):
+        '''get the previous sent messages between users'''
         customer = self.request.user.customer
         other_customer = get_object_or_404(Customer, pk=self.kwargs['customer_pk'])
         return ChatMessage.objects.filter(
@@ -406,15 +437,18 @@ class ChatDetailView(LoginRequiredMixin, ListView, FormView):
         ).order_by('date')
 
     def form_valid(self, form):
+        '''sending a message, which was done by a form'''
         form.instance.sender = self.request.user.customer
         form.instance.receiver = get_object_or_404(Customer, pk=self.kwargs['customer_pk'])
         form.save()
         return super().form_valid(form)
 
     def get_success_url(self):
+        #upon sucessfully sent, user will not be directed to other page, but to see the just sent messages
         return reverse('project:chat_detail', kwargs={'customer_pk': self.kwargs['customer_pk']})
     
     def get(self, request, customer_pk):
+        #sending the message, which was done by the form, works together with form_valid
         customer = request.user.customer
         other_customer = get_object_or_404(Customer, pk=customer_pk)
 
@@ -435,6 +469,7 @@ class ChatDetailView(LoginRequiredMixin, ListView, FormView):
         return render(request, 'project/chat_detail.html', context)
 
     def post(self, request, customer_pk):
+        #similarly, post the sent message if it's valid
         customer = request.user.customer
         other_customer = get_object_or_404(Customer, pk=customer_pk)
 
@@ -462,12 +497,13 @@ class ChatDetailView(LoginRequiredMixin, ListView, FormView):
 
 
 class CreateItemView(LoginRequiredMixin, CreateView):
-    '''A view to create an item (with image upload)'''
+    '''A view to create an item (with image upload), implementing form from forms.py'''
     model = Item
     form_class = CreateItemForm
     template_name = "project/create_item_form.html"
 
     def form_valid(self, form):
+        #form_valid function when we create an item
         item = form.save(commit=False)
         item.customer = self.request.user.customer  # Associate the item with the logged-in customer
         item.save()
@@ -480,11 +516,13 @@ class CreateItemView(LoginRequiredMixin, CreateView):
         return redirect('project:show_self')  # Redirect to the user's profile page after creating the item
 
     def get_context_data(self, **kwargs):
+        '''handling image submission and linking with Item object'''
         context = super().get_context_data(**kwargs)
         context['images_form'] = CreateItemForm()  # Handle images form
         return context
 
     def get(self, request, *args, **kwargs):
+        #only takes care when user choose not to create an item
         if request.GET.get("cancel"):
             return redirect('project:show_all_items')  # Redirect if cancel button is clicked
         return super().get(request, *args, **kwargs)
@@ -492,12 +530,13 @@ class CreateItemView(LoginRequiredMixin, CreateView):
 
 
 class UpdateItemView(LoginRequiredMixin, UpdateView):
-    '''A view to update an existing item'''
+    '''A view to update an existing item, using form from forms.py'''
     model = Item
     form_class = UpdateItemForm
     template_name = "project/update_item_form.html"
 
     def form_valid(self, form):
+         #form_valid function when we update an item
         # Save the item first
         item = form.save(commit=False)
         item.save()  # Save the item to get its ID
@@ -511,6 +550,7 @@ class UpdateItemView(LoginRequiredMixin, UpdateView):
         return redirect('project:show_self')
 
     def get_object(self, queryset=None):
+        #get the object that we are updating
         item = super().get_object(queryset)
         # Ensure the logged-in user is the owner of the item
         if item.customer != self.request.user.customer:
@@ -518,6 +558,7 @@ class UpdateItemView(LoginRequiredMixin, UpdateView):
         return item
 
     def get_context_data(self, **kwargs):
+        '''get context data for updating, and handles image adding/deleting'''
         context = super().get_context_data(**kwargs)
         # Provide the form for image upload, if any
         context['images_form'] = UpdateItemForm()
@@ -525,11 +566,13 @@ class UpdateItemView(LoginRequiredMixin, UpdateView):
         return context
 
     def get(self, request, *args, **kwargs):
+        #only takes care of cancelling update
         if request.GET.get("cancel"):
             return redirect('project:show_item_detail', pk=self.kwargs['pk'])  # Redirect if cancel button is clicked
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        '''handles image deletion and item update and posting such update '''
         item = self.get_object()  # Get the item object
 
         # Handle image deletion
@@ -543,12 +586,16 @@ class UpdateItemView(LoginRequiredMixin, UpdateView):
 
     
 class NotificationListView(LoginRequiredMixin, ListView):
+    '''A view to see the list of Notifications, including past notifications, to avoid having too
+    many notifications, add a paginate_by field to limit the number of notifications'''
     model = Notification
     template_name = 'project/notifications.html'
     context_object_name = 'notifications'
     paginate_by = 5
 
     def get_queryset(self):
+        '''get the notifications we want to see and allows searching for notifications matching
+        the criteria'''
         queryset = super().get_queryset()
         queryset = Notification.objects.filter(user=self.request.user).order_by('-created_at')
 
@@ -574,24 +621,29 @@ class NotificationListView(LoginRequiredMixin, ListView):
 
 
     def get_context_data(self, **kwargs):
-        # We no longer need to override this unless you're adding custom context
+        #only checks if we have unread notifications, if not, then this function is not needed
         context = super().get_context_data(**kwargs)
         context['has_unread'] = Notification.objects.filter(user=self.request.user, is_read=False).exists()
         return context
 
 
 class MarkNotificationReadView(View):
+    '''View to mark notifications as read, since when notifications were sent, it comes as 
+    unread, which will have a red dot on Notification link. Marking notification as read will
+    make the red dot dissapear'''
     def post(self, request, pk):
+        #when we click the button to mark notification as read, we update the notification
         notification = get_object_or_404(Notification, pk=pk, user=request.user)
         notification.is_read = True
         notification.save()
-        print(notification)
 
         # After marking as read, redirect back to the notification list or a specific page
         return redirect(reverse('project:notification'))
 
 
 class OrderDetailView(LoginRequiredMixin, DetailView):
+    '''Detail view of the order, when an order is placed, order objects were created,
+    user can be directed to this page from the notification list page'''
     model = Order
     template_name = 'project/order_detail.html'
     context_object_name = 'order'
@@ -602,67 +654,23 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     
 
 class CheckoutCartView(LoginRequiredMixin, TemplateView):
+    '''Checkout confirmation page to the user, once the user selects the items in the shopping cart 
+    and hits checkout, user are directed to this page as a confirmation'''
     template_name = 'project/checkout_cart.html'
 
-    def post(self, request, *args, **kwargs):
-        cart = request.user.shopping_cart
-        cart_items = cart.cart_items.all()
-
-        # Get the list of selected items' IDs from the checkbox
-        selected_item_ids = request.POST.getlist('checkout_items')
-
-        if not selected_item_ids:
-            return redirect('project:shopping_cart')
-
-        selected_item_ids = [int(item_id) for item_id in selected_item_ids]
-
-        # Create a grouped CustomerOrder for the customer
-        customer_order = CustomerOrder.objects.create(customer=request.user.customer)
-
-        for cart_item in cart_items:
-            if cart_item.pk in selected_item_ids:
-                if cart_item.quantity > cart_item.item.quantity_left:
-                    cart_item.delete()  # Remove item if stock is insufficient
-                    continue
-
-                # Create an individual order for each item
-                order = Order.objects.create(
-                    customer_order=customer_order,
-                    customer=request.user.customer,
-                    item=cart_item.item,
-                    quantity=cart_item.quantity,
-                    seller=cart_item.item.customer,
-                )
-
-                # Notify the seller
-                Notification.objects.create(
-                    user=cart_item.item.customer.user,
-                    message=(
-                        f"You have received an order for {cart_item.item.title} "
-                        f"(Quantity: {cart_item.quantity}). "
-                        f"Total Price: ${cart_item.get_total_price()}"
-                    ),
-                    order=order,
-                )
-
-                # Reduce stock
-                cart_item.item.quantity_left -= cart_item.quantity
-                cart_item.item.save()
-
-                # Remove the item from the cart
-                cart_item.delete()
-
-        # Redirect to past orders or a confirmation page
-        return redirect('project:checkout_cart')
     
 
 class PastOrdersView(LoginRequiredMixin, ListView):
+    '''A list of previuos order of the user. This is different than the Order object, this object
+    is created when user submits one or more items from the shopping cart, and will combine all those
+    items together as an object, which is easier for the user to track with'''
     model = CustomerOrder
     template_name = 'project/past_orders.html'
     context_object_name = 'customer_orders'
-    paginate_by = 3
+    paginate_by = 3 #pagination to avoid all orders being listed
 
     def get_queryset(self):
+        #get the orders that the user placed before
         queryset = super().get_queryset()
         queryset = CustomerOrder.objects.filter(customer=self.request.user.customer).order_by("-date")
 
@@ -685,49 +693,21 @@ class PastOrdersView(LoginRequiredMixin, ListView):
             queryset = queryset.order_by('-date')  # Latest first
 
         return queryset
-
-
-
-class DeleteCartItemsView(View):
-    def post(self, request, *args, **kwargs):
-        print(request.POST.getlist)
-        delete_items = request.POST.getlist('delete_items')
-        print(delete_items)
-        print("HELLO")
-        # Delete the selected cart items
-        if delete_items:
-            CartItem.objects.filter(id__in=delete_items, cart__user=request.user).delete()
-
-        # Redirect to the shopping cart page after deletion
-        return redirect('project:shopping_cart')
+    
 
 
 class DeleteItemView(LoginRequiredMixin, DeleteView):
+    '''The view to delete an item, i.e., stop selling this item'''
     model = Item
-    template_name = 'project/item_confirm_delete.html'  # Confirmation template
+    template_name = 'project/item_confirm_delete.html'
     context_object_name = 'item'
-   
-    def get_success_url(self):
-        # Redirect to the associated item's detail page after deletion
-        return reverse('project:show_self')
 
-    def dispatch(self, request, *args, **kwargs):
-        # Ensure the logged-in user owns the item
-        item = self.get_object()
-        print(f"Dispatch called for item: {item}")  # Debugging output
-        if item.customer.user != request.user:
-            print("FASLE")
-            return reverse('project:show_all')
-        return super().dispatch(request, *args, **kwargs)
-    
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        print(f"Item to delete: {context['item']}")  # Debugging output
-        return context
+    def get_success_url(self):
+        '''redirect once successfully delete'''
+        return reverse('project:show_self') 
 
     def post(self, request, *args, **kwargs):
-        # Perform soft deletion (mark as deleted instead of actually deleting the object)
+        '''method to delete the item in form submission'''
         item = self.get_object()
         item.is_deleted = True  # Mark as deleted
         item.save()

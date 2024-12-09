@@ -2,7 +2,23 @@
 
 {% block content %}
     <h2>Your Followers</h2>
+
+    <form method="get" action="{% url 'project:follower_list' %}">
+        <div>
+            <label for="search_last">Follower Last Name Starts:</label>
+            <input type="text" id="search_last" name="search_last">
+        </div>
+        <div>
+            <label for="search_first">Follower First Name Starts:</label>
+            <input type="text" id="search_first" name="search_first">
+        </div>
+        <button type="submit">Filter</button>
+    </form>
+
+    
     {% if followers %}
+
+    
         <ul>
             {% for follower in followers %}
                 <li style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
