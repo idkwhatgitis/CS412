@@ -33,6 +33,7 @@ urlpatterns = [
     path('pastorder/', views.PastOrdersView.as_view(), name='past_order'), # list of orders for each user has placed
     path('notifications/mark_as_read/<int:pk>/', views.MarkNotificationReadView.as_view(), name='mark_notification_read'),#mark the notification as read, so the red dot on Notifications link  dissappears
     path('item/<int:pk>/delete/', views.DeleteItemView.as_view(), name='delete_item'), #deleting an item for the user, in other words, stop selling it
+    path('graphs', views.StatisticsView.as_view(), name='graph'), #graphs for the web application
    ]
 
 

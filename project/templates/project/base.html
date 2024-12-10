@@ -29,7 +29,8 @@
                         <span style="position: absolute; top: -5px; right: -10px; width: 10px; height: 10px; background-color: red; border-radius: 50%;"></span>
                     {% endif %}
                 </a>
-                
+                <a href="{% url 'project:graph' %}" style="text-decoration: none; margin-bottom: 10px;">Statistics</a>
+
                 <p style="margin-bottom: 10px; margin-left: 10px;">
                     Logged in: {{ request.user }}
                 </p>

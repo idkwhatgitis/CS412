@@ -18,6 +18,13 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from django.shortcuts import redirect
+from django.utils.timezone import timedelta
+from datetime import date
+from django.db.models import Count
+from django.utils.dateparse import parse_date
+import plotly
+import plotly.graph_objs as go
+from plotly.offline import plot
 
 
 class ShowAllItemView(ListView):
@@ -712,3 +719,91 @@ class DeleteItemView(LoginRequiredMixin, DeleteView):
         item.is_deleted = True  # Mark as deleted
         item.save()
         return redirect(self.get_success_url())
+    
+
+
+
+class StatisticsView(ListView):
+    '''using plotly to generate some web statistics, particularly regarding orders placed and items listed'''
+    template_name = 'project/statistics.html'
+    model = CustomerOrder
+    context_object_name = 'orders'
+
+    def get_context_data(self, **kwargs):
+        '''Generate data for graphs'''
+        context = super().get_context_data(**kwargs)
+
+        start_date = self.request.GET.get('start_date', None)
+        end_date = self.request.GET.get('end_date', None)
+        orders = CustomerOrder.objects.all()
+        items = Item.objects.filter(is_deleted=False)
+
+        # Handle dates if there's any
+        start_date_parsed = parse_date(start_date) if start_date else None
+        end_date_parsed = parse_date(end_date) if end_date else None
+
+        if not start_date_parsed:
+            start_date_parsed = orders.order_by("date__date").first().date.date() if orders.exists() else date.today()
+
+        if not end_date_parsed:
+            end_date_parsed = orders.order_by("date__date").last().date.date() if orders.exists() else date.today()
+        
+        full_date_range = [start_date_parsed + timedelta(days=i) for i in range((end_date_parsed - start_date_parsed).days + 1)]
+
+        # Orders Placed on Different Days
+        order_dates = orders.values('date__date').annotate(count=Count('id'))
+        if order_dates:
+            # Populate data for valid results
+            order_counts = {entry['date__date']: entry['count'] for entry in order_dates}
+            order_labels = [d.strftime('%Y-%m-%d') for d in full_date_range]
+            order_values = [order_counts.get(d, 0) for d in full_date_range]
+            orders_histogram = go.Bar(
+                x=order_labels,
+                y=order_values,
+                name="Orders Placed"
+            )
+        else:
+            # Handle no results case
+            orders_histogram = go.Bar(
+                x=["No Results"],
+                y=[0],
+                name="Orders Placed"
+            )
+
+        context['orders_histogram'] = plot(
+            {"data": [orders_histogram]},
+            auto_open=False,
+            output_type='div'
+        )
+
+        # Items Released on Different Days
+        item_dates = items.values('date__date').annotate(count=Count('id'))
+        if item_dates:
+            # Populate data for valid results
+            item_counts = {entry['date__date']: entry['count'] for entry in item_dates}
+            item_labels = [d.strftime('%Y-%m-%d') for d in full_date_range]
+            item_values = [item_counts.get(d, 0) for d in full_date_range]
+            items_histogram = go.Bar(
+                x=item_labels,
+                y=item_values,
+                name="Items Released"
+            )
+        else:
+            # Handle no results case
+            items_histogram = go.Bar(
+                x=["No Results"],
+                y=[0],
+                name="Items Released"
+            )
+
+        context['items_histogram'] = plot(
+            {"data": [items_histogram]},
+            auto_open=False,
+            output_type='div'
+        )
+
+        # Add filtered data to context
+        context['orders'] = orders
+        context['items'] = items
+        return context
+    

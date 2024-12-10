@@ -1,0 +1,23 @@
+{% extends 'project/base.html' %}
+{% block content %}
+<body>
+    <h1>Statistics</h1>
+    
+    <form method="get">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+        
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+        
+        <button type="submit">Filter</button>
+    </form>
+
+    <h2>Orders Placed by Day</h2>
+    <div>{{ orders_histogram|safe }}</div>
+
+    <h2>Items Released by Day</h2>
+    <div>{{ items_histogram|safe }}</div>
+</body>
+
+{% endblock %}
